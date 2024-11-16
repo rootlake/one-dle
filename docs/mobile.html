@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wordle in One</title>
+    <style>
+        :root {
+            --color-tone-1: #ffffff;
+            --color-tone-4: #3a3a3c;
+            --color-tone-7: #121213;
+            --key-bg: #818384;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-tone-7);
+            font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+            color: var(--color-tone-1);
+            overflow: hidden;
+            touch-action: pan-y pinch-zoom;
+        }
+
+        #main-content {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .puzzle-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content">
+        <div class="puzzle-container">
+            <iframe id="puzzle-frame"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentPuzzle = 101;
+        let maxPuzzle = 114;
+        const puzzleFrame = document.getElementById('puzzle-frame');
+        const container = document.querySelector('.puzzle-container');
+        
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isDragging = false;
+        let startTransform = 0;
+
+        function loadPuzzle(puzzleNumber) {
+            puzzleFrame.src = `/one-dle/assets/js/puzzles/puzzle${puzzleNumber}.html`;
+            currentPuzzle = puzzleNumber;
+        }
+
+        function navigatePuzzle(direction) {
+            let newPuzzle = currentPuzzle + direction;
+            if (newPuzzle > maxPuzzle) newPuzzle = 101;
+            if (newPuzzle < 101) newPuzzle = maxPuzzle;
+            loadPuzzle(newPuzzle);
+        }
+
+        // Touch event handlers
+        container.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+            isDragging = true;
+            startTransform = 0;
+            container.style.transition = 'none';
+        });
+
+        container.addEventListener('touchmove', e => {
+            if (!isDragging) return;
+            
+            const currentX = e.touches[0].clientX;
+            const diff = currentX - touchStartX;
+            container.style.transform = `translateX(${diff}px)`;
+        });
+
+        container.addEventListener('touchend', e => {
+            isDragging = false;
+            container.style.transition = 'transform 0.3s ease-out';
+            
+            const diff = touchEndX - touchStartX;
+            const threshold = window.innerWidth / 3; // Swipe threshold
+
+            if (Math.abs(diff) > threshold) {
+                // Determine direction and navigate
+                if (diff > 0) {
+                    navigatePuzzle(-1); // Swipe right = previous puzzle
+                } else {
+                    navigatePuzzle(1);  // Swipe left = next puzzle
+                }
+            }
+            
+            // Reset position
+            container.style.transform = 'translateX(0)';
+        });
+
+        // Prevent default touch behavior to avoid page scrolling
+        document.addEventListener('touchmove', e => {
+            if (isDragging) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Load initial puzzle
+        loadPuzzle(currentPuzzle);
+    </script>
+</body>
+</html> 

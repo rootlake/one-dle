@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONE-dle</title>
+    <!--<link rel="stylesheet" href="styles.css">-->
+    <style>
+        :root {
+    --color-tone-1: #ffffff;
+    --color-tone-2: #818384;
+    --color-tone-3: #565758;
+    --color-tone-4: #3a3a3c;
+    --color-tone-5: #272729;
+    --color-tone-6: #1a1a1b;
+    --color-tone-7: #121213;
+    --green: #538d4e;
+    --yellow: #b59f3b;
+    --darkendYellow: #a38a1b;
+    --key-bg: #818384;
+    --key-text-color: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-tone-7);
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    padding-bottom: 40px;
+}
+
+#game {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    border-bottom: 1px solid var(--color-tone-4);
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: 0.2rem;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-tone-1);
+}
+
+#board-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+#board {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    grid-gap: 7px;
+    padding: 13px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 455px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 7px;
+}
+
+.tile {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.6rem;
+    line-height: 2.6rem;
+    font-weight: bold;
+    vertical-align: middle;
+    box-sizing: border-box;
+    color: var(--color-tone-1);
+    text-transform: uppercase;
+    user-select: none;
+    border: 3px solid var(--color-tone-4);
+}
+
+.tile.correct {
+    background-color: var(--green);
+    border-color: var(--green);
+}
+
+.tile.present {
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.tile.absent {
+    background-color: var(--color-tone-4);
+    border-color: var(--color-tone-4);
+}
+
+#keyboard-container {
+    width: 100%;
+    padding: 0 12px;
+    margin-top: -10px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto 9px;
+    touch-action: manipulation;
+}
+
+.keyboard-row button {
+    font-family: inherit;
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    margin: 0 3px 0 0;
+    height: 68px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--key-bg);
+    color: var(--key-text-color);
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+    font-size: 0.9rem;
+}
+
+.keyboard-row button.wide-button {
+    flex: 1.5;
+    font-size: 14px;
+}
+
+.spacer {
+    flex: 0.5;
+}
+
+#code-input-container {
+    width: 100%;
+    padding: 0 12px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#code-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid var(--color-tone-4);
+    background-color: var(--color-tone-7);
+    color: var(--color-tone-1);
+    border-radius: 4px 0 0 4px;
+}
+
+#apply-code {
+    padding: 10px 15px 15px;
+    font-size: 12px;
+    background-color: var(--key-bg);
+    color: var(--key-text-color);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#apply-code:hover {
+    background-color: var(--color-tone-3);
+}
+
+.keyboard-row button.correct {
+    background-color: var(--green);
+    border-color: var(--green);
+    color: var(--key-text-color);
+}
+
+.keyboard-row button.present {
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--key-text-color);
+}
+
+.keyboard-row button.absent {
+    background-color: var(--color-tone-4);
+    border-color: var(--color-tone-4);
+    color: var(--key-text-color);
+}
+
+#code-text {
+    color: var(--color-tone-7);
+    margin-top: 10px;
+    user-select: all;
+}
+
+#check-answer {
+    font-family: inherit;
+    font-weight: bold;
+    padding: 15px 30px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--key-bg);
+    color: var(--key-text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+#check-answer:hover {
+    background-color: var(--color-tone-3);
+}
+
+#code-input-container {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    </style>
+</head>
+<body>
+    <div id="game">
+        <header>
+            <h1>Wordle in One #110</h1>
+        </header>
+        <div id="board-container">
+            <div id="board">
+                <div class="row">
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                </div>
+                <div class="row">
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                </div>
+                <div class="row">
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                </div>
+                <div class="row">
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                </div>
+                <div class="row">
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                </div>
+                <div class="row">
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                    <div class="tile"></div>
+                </div>
+            </div>
+        </div>
+        <div id="keyboard-container">
+            <div class="keyboard-row">
+                <button data-key="q">q</button>
+                <button data-key="w">w</button>
+                <button data-key="e">e</button>
+                <button data-key="r">r</button>
+                <button data-key="t">t</button>
+                <button data-key="y">y</button>
+                <button data-key="u">u</button>
+                <button data-key="i">i</button>
+                <button data-key="o">o</button>
+                <button data-key="p">p</button>
+            </div>
+            <div class="keyboard-row">
+                <div class="spacer half"></div>
+                <button data-key="a">a</button>
+                <button data-key="s">s</button>
+                <button data-key="d">d</button>
+                <button data-key="f">f</button>
+                <button data-key="g">g</button>
+                <button data-key="h">h</button>
+                <button data-key="j">j</button>
+                <button data-key="k">k</button>
+                <button data-key="l">l</button>
+                <div class="spacer half"></div>
+            </div>
+            <div class="keyboard-row">
+                <button data-key="enter" class="wide-button">↵</button>
+                <button data-key="z">z</button>
+                <button data-key="x">x</button>
+                <button data-key="c">c</button>
+                <button data-key="v">v</button>
+                <button data-key="b">b</button>
+                <button data-key="n">n</button>
+                <button data-key="m">m</button>
+                <button data-key="backspace" class="wide-button">⌫</button>
+            </div>
+        </div>
+        <div id="code-input-container">
+            <button id="check-answer">ANSWER</button>
+        </div>
+    </div>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        let solution = 'SPIKY';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const puzzleCode = 'HOUSE ---?- NASAL --?-- SKIRT !?!-- SLICK !-!-? SPIKY';
+            if (puzzleCode && puzzleCode !== '{{PUZZLECODE}}') {
+                applyCode(puzzleCode);
+            }
+        });
+
+        function parseCode(code) {
+            const parts = code.split(' ');
+            const wordsAndColors = [];
+            for (let i = 0; i < parts.length - 1; i += 2) {
+                if (parts[i] && parts[i + 1]) {
+                    wordsAndColors.push({
+                        word: parts[i],
+                        colors: parts[i + 1]
+                    });
+                }
+            }
+            return wordsAndColors;
+        }
+
+        function applyCode(code) {
+            const parts = code.split(' ');
+            const wordsAndColors = parseCode(code);
+            updateGrid(wordsAndColors);
+            updateKeyboard(wordsAndColors);
+        }
+
+        function updateGrid(wordsAndColors) {
+            const rows = document.querySelectorAll('#board .row');
+            
+            wordsAndColors.forEach((item, index) => {
+                if (index < 5) {
+                    const tiles = rows[index].querySelectorAll('.tile');
+                    item.word.split('').forEach((letter, letterIndex) => {
+                        if (letterIndex < 5) {
+                            const tile = tiles[letterIndex];
+                            tile.textContent = letter.toUpperCase();
+                            applyColor(tile, item.colors[letterIndex]);
+                        }
+                    });
+                }
+            });
+
+            for (let i = wordsAndColors.length; i < 5; i++) {
+                const tiles = rows[i].querySelectorAll('.tile');
+                tiles.forEach(tile => {
+                    tile.textContent = '';
+                    tile.className = 'tile';
+                });
+            }
+        }
+
+        function updateKeyboard(wordsAndColors) {
+            const keyboardButtons = document.querySelectorAll('#keyboard-container button');
+            const keyStates = {};
+
+            wordsAndColors.forEach(item => {
+                item.word.split('').forEach((letter, index) => {
+                    const color = item.colors[index];
+                    const lowerLetter = letter.toLowerCase();
+                    
+                    if (!keyStates[lowerLetter] || getColorPriority(color) > getColorPriority(keyStates[lowerLetter])) {
+                        keyStates[lowerLetter] = color;
+                    }
+                });
+            });
+
+            keyboardButtons.forEach(button => {
+                const letter = button.textContent.toLowerCase();
+                if (keyStates[letter]) {
+                    applyColor(button, keyStates[letter]);
+                } else {
+                    button.className = '';
+                }
+            });
+        }
+
+        function applyColor(element, colorCode) {
+            element.classList.remove('correct', 'present', 'absent');
+            switch (colorCode) {
+                case '!':
+                    element.classList.add('correct');
+                    break;
+                case '?':
+                    element.classList.add('present');
+                    break;
+                case '-':
+                    element.classList.add('absent');
+                    break;
+            }
+        }
+
+        function getColorPriority(colorCode) {
+            switch (colorCode) {
+                case '!': return 3;
+                case '?': return 2;
+                case '-': return 1;
+                default: return 0;
+            }
+        }
+
+        function showAnswer() {
+            const rows = document.querySelectorAll('#board .row');
+            let emptyRow = null;
+            
+            // Find the first empty row
+            for (const row of rows) {
+                const firstTile = row.querySelector('.tile');
+                if (!firstTile.textContent || firstTile.textContent.trim() === '') {
+                    emptyRow = row;
+                    break;
+                }
+            }
+            
+            // If no empty row found, use the last row
+            if (!emptyRow) {
+                emptyRow = rows[rows.length - 1];
+            }
+            
+            // Show the solution
+            const tiles = emptyRow.querySelectorAll('.tile');
+            tiles.forEach(tile => {
+                tile.textContent = '';
+                tile.className = 'tile';
+            });
+            
+            solution.split('').forEach((letter, index) => {
+                tiles[index].textContent = letter.toUpperCase();
+                tiles[index].classList.add('correct');
+            });
+            
+            // Update keyboard
+            const keyboardButtons = document.querySelectorAll('#keyboard-container button');
+            keyboardButtons.forEach(button => {
+                if (solution.toLowerCase().includes(button.textContent.toLowerCase())) {
+                    button.classList.remove('present', 'absent');
+                    button.classList.add('correct');
+                }
+            });
+
+            // Disable the answer button
+            const answerButton = document.getElementById('check-answer');
+            answerButton.disabled = true;
+            answerButton.style.opacity = '0.5';
+            answerButton.style.cursor = 'default';
+        }
+
+        document.getElementById('check-answer').addEventListener('click', showAnswer);
+    </script>
+</body>
+</html>
