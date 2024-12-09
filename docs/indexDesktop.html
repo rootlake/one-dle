@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One-dle</title>
+    <style>
+        :root {
+            --color-tone-1: #ffffff;
+            --color-tone-4: #3a3a3c;
+            --color-tone-7: #121213;
+            --key-bg: #818384;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-tone-7);
+            font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+            color: var(--color-tone-1);
+            display: flex;
+        }
+
+        #sidebar {
+            width: 200px;
+            height: 100vh;
+            background-color: var(--color-tione-4);
+            padding: 20px;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+        }
+
+        #puzzle-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #puzzle-list li {
+            padding: 10px;
+            cursor: pointer;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        #puzzle-list li:hover {
+            background-color: var(--key-bg);
+        }
+
+        #puzzle-list li.active {
+            background-color: var(--key-bg);
+        }
+
+        #main-content {
+            margin-left: 200px;
+            flex-grow: 1;
+            position: relative;
+            height: 100vh;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--color-tone-4);
+            color: var(--color-tone-1);
+            padding: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-size: 24px;
+        }
+
+        .nav-arrow:hover {
+            background-color: var(--key-bg);
+        }
+
+        #prev-puzzle {
+            left: 10px;
+        }
+
+        #next-puzzle {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2>Puzzles</h2>
+        <ul id="puzzle-list"></ul>
+    </div>
+    <div id="main-content">
+        <button class="nav-arrow" id="prev-puzzle">←</button>
+        <iframe id="puzzle-frame"></iframe>
+        <button class="nav-arrow" id="next-puzzle">→</button>
+    </div>
+
+    <script>
+        let currentPuzzle = 101;
+        let maxPuzzle = 114;
+        const puzzleFrame = document.getElementById('puzzle-frame');
+        const puzzleList = document.getElementById('puzzle-list');
+
+        function loadPuzzle(puzzleNumber) {
+            puzzleFrame.src = `puzzles/puzzle${puzzleNumber}.html`;
+            currentPuzzle = puzzleNumber;
+            updateActiveState();
+        }
+
+        function updateActiveState() {
+            document.querySelectorAll('#puzzle-list li').forEach(li => {
+                li.classList.remove('active');
+                if (parseInt(li.dataset.puzzle) === currentPuzzle) {
+                    li.classList.add('active');
+                }
+            });
+        }
+
+        function navigatePuzzle(direction) {
+            let newPuzzle = currentPuzzle + direction;
+            if (newPuzzle > maxPuzzle) newPuzzle = 101;
+            if (newPuzzle < 101) newPuzzle = maxPuzzle;
+            loadPuzzle(newPuzzle);
+        }
+
+        // Create puzzle list
+        for (let i = 101; i <= maxPuzzle; i++) {
+            const li = document.createElement('li');
+            li.textContent = `Puzzle ${i}`;
+            li.dataset.puzzle = i;
+            li.onclick = () => loadPuzzle(i);
+            puzzleList.appendChild(li);
+        }
+
+        // Event listeners for navigation
+        document.getElementById('prev-puzzle').onclick = () => navigatePuzzle(-1);
+        document.getElementById('next-puzzle').onclick = () => navigatePuzzle(1);
+
+        // Load initial puzzle
+        loadPuzzle(currentPuzzle);
+    </script>
+</body>
+</html>

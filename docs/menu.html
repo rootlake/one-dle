@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>One-dle Menu</title>
+    <style>
+        :root {
+            --color-tone-1: #ffffff;
+            --color-tone-4: #3a3a3c;
+            --color-tone-7: #121213;
+            --key-bg: #818384;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--color-tone-7);
+            font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+            color: var(--color-tone-1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            border-bottom: 1px solid var(--color-tone-4);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .menu-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .menu-item {
+            background-color: var(--color-tone-4);
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-tone-1);
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item:active {
+            background-color: var(--key-bg);
+        }
+
+        .menu-item::after {
+            content: "→";
+            font-size: 20px;
+        }
+
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .puzzle-item {
+            background-color: var(--color-tone-4);
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-tone-1);
+            text-align: center;
+        }
+
+        .puzzle-item:active {
+            background-color: var(--key-bg);
+        }
+    </style>
+</head>
+<body>
+    <h1>One-dle Menu</h1>
+
+    <div class="menu-section">
+        <h2>Views</h2>
+        <div class="menu-grid">
+            <a href="mobile.html" class="menu-item">Mobile View</a>
+            <a href="index.html" class="menu-item">Main Index</a>
+            <a href="indexDesktop.html" class="menu-item">Desktop View</a>
+            <a href="local-mobile.html" class="menu-item">Local Mobile View</a>
+        </div>
+    </div>
+
+    <div class="menu-section">
+        <h2>Individual Puzzles</h2>
+        <div class="puzzle-grid">
+            <script>
+                // Generate puzzle links from 101 to 114
+                for (let i = 101; i <= 114; i++) {
+                    document.write(`
+                        <a href="puzzles/puzzle${i}.html" class="puzzle-item">
+                            #${i}
+                        </a>
+                    `);
+                }
+            </script>
+        </div>
+    </div>
+
+    <script>
+        // Add click handler to capture all link clicks
+        document.addEventListener('click', function(e) {
+            // If it's a link
+            if (e.target.closest('a')) {
+                e.preventDefault();
+                const href = e.target.closest('a').getAttribute('href');
+                // If we're inside the mobile viewer iframe
+                if (window.parent !== window) {
+                    window.parent.location.href = href;
+                } else {
+                    window.location.href = href;
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
